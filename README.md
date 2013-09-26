@@ -1,5 +1,7 @@
 # doauth2
 
+[![Build Status](https://drone.io/github.com/chankh/doauth2/status.png)](https://drone.io/github.com/chankh/doauth2/latest)
+
 ### Description
 
 A Dart OAuth2 library for client-side (implicit) flow. A simple port from Andreas Åkre Solberg's JSO library (https://github.com/andreassolberg/jso)
@@ -53,8 +55,6 @@ When you have received an access token, it will be stored in the local storage a
 No guarantees about the security or functionality of this libary
 
 ### Licenses
-
-Copyright (c) 2013 KH Chan
 
 Licensed under the The GNU Lesser General Public License, Version 2.1 (LGPL-2.1)
 and Version 3.0 (LGPL-3.0); meaning that you can select which of these two
