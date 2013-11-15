@@ -45,7 +45,7 @@ void _setOptions(Map opts) {
 }
 
 
-void _checkForToken(String providerId, { String url, callback }) {
+_checkForToken(String providerId, { String url, callback }) {
   var atoken;
   String h = window.location.hash;
   double now = epoch();
@@ -57,13 +57,13 @@ void _checkForToken(String providerId, { String url, callback }) {
   // If a url is provided
   if (url != null && url.isNotEmpty) {
     int hashIndex = url.indexOf('#');
-    if (hashIndex == -1) return;
+    if (hashIndex == -1) return null;
     h = url.substring(hashIndex);
   }
 
   // Start with checking if there is a token in the hash
-  if (h.length < 2) return;
-  if (h.indexOf('access_token') == -1) return;
+  if (h.length < 2) return null;
+  if (h.indexOf('access_token') == -1) return null;
   h = h.substring(1);
   atoken = queryToMap(h);
 
@@ -129,6 +129,8 @@ void _checkForToken(String providerId, { String url, callback }) {
   }
 
   log.fine(atoken.toString());
+
+  return atoken;
 }
 
 void _authRequest(String providerId, List<String> scopes) {
@@ -186,16 +188,23 @@ String _findDefaultProvider(Map<String, Config> c) {
   if (i == 1) return k;
 }
 
-void doConfigure(Map<String, Config> c, {var opts}) {
+configure(Map<String, Config> c, {var opts}) {
   _configs = c;
   _setOptions(opts);
   try {
     var provider = _findDefaultProvider(c);
     log.info('doConfigure() about to check for token for this profile: ' + provider);
-    _checkForToken(provider);
+    return _checkForToken(provider);
   } catch (e) {
     log.log(Level.SEVERE, 'Error when retrieving token from hash.', e);
     window.location.hash = '';
+  }
+}
+
+void wipe() {
+  String key;
+  for (key in _configs.keys) {
+    _tokenStorage.wipeTokens(key);
   }
 }
 
@@ -203,9 +212,7 @@ void _apiRedirect(url) {
   window.location.assign(url);
 }
 
-
-
-void auth(Map settings) {
+auth(Map settings) {
   String providerId = settings['oauth_provider'];
   bool allowia = settings['oauth_allowia'] || false;
   List<String> scopes = settings['oauth_scopes'];
@@ -219,12 +226,14 @@ void auth(Map settings) {
       log.info("Perform authrequest");
       _authRequest(providerId, scopes);
     }
-  }
-
-  return performAjax(token, config);
+  } else return token;
 }
 
-performAjax(token, config) {
-  log.info('Perform ajax!');
+HttpRequest request(token, HttpRequest request) {
+  request.setRequestHeader('Authorization', 'Bearer ' + token['access_token']);
+  return request;
+}
 
+getToken(String provider) {
+  return _tokenStorage.getToken(provider, scopes: []);
 }

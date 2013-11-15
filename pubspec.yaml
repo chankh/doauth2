@@ -1,11 +1,11 @@
 name: doauth2
-version: 0.1.0
+version: 0.2.0
 author: KH Chan <kwunhok@gmail.com>
 description: A Dart OAuth2 library
 homepage: http://github.com/chankh/doauth2
 environment:
-  sdk: '>=0.6.5'
+  sdk: '>=0.8.10+6<2.0.0'
 dependencies:
-  json: any
-  logging: any
-  unittest: any
+  json: '>=0.9.0 < 0.10.0'
+  logging: '>=0.9.0 < 0.10.0'
+  unittest: '>=0.9.0 < 0.10.0'
